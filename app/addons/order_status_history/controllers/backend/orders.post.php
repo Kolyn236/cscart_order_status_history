@@ -12,6 +12,8 @@
  * "copyright.txt" FILE PROVIDED WITH THIS DISTRIBUTION PACKAGE.            *
  ****************************************************************************/
 
+use Tygh\Registry;
+
 if (!defined('BOOTSTRAP')) { die('Access denied'); }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -20,9 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 if ($mode == 'order_status_history') {
 
-    $order_history = db_get_array(
-        'SELECT * FROM ?:order_status_history'
-    );
+   list($status_history, $params) = fn_get_order_status_history($_REQUEST, CART_LANGUAGE, Registry::get('settings.Appearance.admin_elements_per_page'));
 
-    Tygh::$app['view']->assign('order_history', $order_history);
+   Tygh::$app['view']->assign(array(
+        'order_history'  => $status_history,
+        'search' => $params,
+   ));
 }
+

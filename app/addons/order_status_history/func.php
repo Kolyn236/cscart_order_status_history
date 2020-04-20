@@ -12,6 +12,8 @@
  * "copyright.txt" FILE PROVIDED WITH THIS DISTRIBUTION PACKAGE.            *
  ****************************************************************************/
 
+use Tygh\Tygh;
+
 if (!defined('BOOTSTRAP')) { die('Access denied'); }
 
 /**
@@ -30,6 +32,8 @@ function fn_get_order_status_history($params = array(), $lang_code = CART_LANGUA
         'page' => 1,
         'items_per_page' => $items_per_page
     );
+
+
 
     $params = array_merge($default_params, $params);
 
@@ -78,52 +82,32 @@ function fn_get_order_status_history($params = array(), $lang_code = CART_LANGUA
         'old_status' => '?:order_status_history.old_status',
     );
 
-    /**
-     * This hook allows you to change parameters of the status selection before making an SQL query.
-     *
-     * @param array        $params    The parameters of the user's query (limit, period, item_ids, etc)
-     * @param string       $condition The conditions of the selection
-     * @param string       $sorting   Sorting (ask, desc)
-     * @param string       $limit     The LIMIT of the returned rows
-     * @param string       $lang_code Language code
-     * @param array        $fields    Selected fields
-     */
-    fn_set_hook('get_status', $params, $condition, $sorting, $limit, $lang_code, $fields);
-
     if (!empty($params['items_per_page'])) {
-        $params['total_items'] = db_get_field("SELECT COUNT(*) FROM ?:banners $join WHERE 1 $condition");
+        $params['total_items'] = db_get_field("SELECT COUNT(*) FROM ?:order_status_history $join WHERE 1 $condition");
         $limit = db_paginate($params['page'], $params['items_per_page'], $params['total_items']);
     }
 
-    $status_history = db_get_hash_array(
-        "SELECT ?p FROM ?:order_status_history " .
-        $join .
-        "WHERE 1 ?p ?p ?p",
-        'order_id', implode(', ', $fields), $condition, $sorting, $limit
-    );
+    $status_history = db_get_array("SELECT * from ?:order_status_history". $sorting." ". $limit);
+
+    $path = fn_get_files_dir_path();
+    fn_mkdir($path);
+    $file = fopen($path . 'debug_log.txt', 'a');
+
+    if (!empty($file)) {
+        fputs($file, 'TIME: ' . date('Y-m-d H:i:s', TIME) . "\n");
+        fputs($file, fn_array2code_string($params) . "\n\n");
+        fclose($file);
+    }
 
     if (!empty($params['item_ids'])) {
         $status_history = fn_sort_by_ids($status_history, explode(',', $params['item_ids']), 'order_id');
     }
-
-    fn_set_hook('get_status_history_post', $status_history, $params);
 
     return array($status_history, $params);
 }
 
 function fn_order_status_history_change_order_status($status_to, $status_from, $order_info, $force_notification, $order_statuses, $place_order) {
 
-
-//    $path = fn_get_files_dir_path();
-//    fn_mkdir($path);
-//    $file = fopen($path . 'debug_log.txt', 'a');
-//
-//    if (!empty($file)) {
-//        fputs($file, 'TIME: ' . date('Y-m-d H:i:s', TIME) . "\n");
-//        fputs($file, fn_array2code_string($order_info) . "\n\n");
-//        fclose($file);
-//    }
-
-    db_query("INSERT INTO ?:order_status_history values (". $order_info['order_id'] . ",". $order_info['user_id'] . ", '".$status_to."' , '".$status_from."', " . time() .")");
+    db_query("INSERT INTO ?:order_status_history values (". $order_info['order_id'] . ",". Tygh::$app['session']['auth']['user_id'] . ", '".$status_to."' , '".$status_from."', " . time() .")");
 
 }

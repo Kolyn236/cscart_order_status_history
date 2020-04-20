@@ -2,11 +2,11 @@
 
     <form action="{""|fn_url}" method="post" name="order_history_form" class=" cm-hide-inputs" enctype="multipart/form-data">
         <input type="hidden" name="fake" value="1" />
-        {include file="common/pagination.tpl" save_current_page=true save_current_url=true div_id="pagination_order_history_form"}
+        {include file="common/pagination.tpl" save_current_page=true save_current_url=true div_id="pagination_order_history"}
 
         {assign var="c_url" value=$config.current_url|fn_query_remove:"sort_by":"sort_order"}
 
-        {assign var="rev" value=$smarty.request.content_id|default:"pagination_order_history_form"}
+        {assign var="rev" value=$smarty.request.content_id|default:"pagination_order_history"}
         {assign var="c_icon" value="<i class=\"icon-`$search.sort_order_rev`\"></i>"}
         {assign var="c_dummy" value="<i class=\"icon-dummy\"></i>"}
 
@@ -17,7 +17,7 @@
                     <tr>
                         <th width="1%" class="left mobile-hide">
                             {include file="common/check_items.tpl" class="cm-no-hide-input"}</th>
-                        <th><a class="cm-ajax" href="{"`$c_url`&sort_by=order_id&sort_order=`$search.sort_order_rev`"|fn_url}" data-ca-target-id={$rev}>{__("order_id")}{if $search.sort_by == "order_id"}{$c_icon nofilter}{else}{$c_dummy nofilter}{/if}</a></th>
+                        <th><a class="cm-ajax" href="{"`$c_url`&sort_by=order_id&sort_order=`$params.sort_order_rev`"|fn_url}" data-ca-target-id={$rev}>{__("order_id")}{if $search.sort_by == "order_id"}{$c_icon nofilter}{else}{$c_dummy nofilter}{/if}</a></th>
                         <th class="mobile-hide"><a class="cm-ajax" href="{"`$c_url`&sort_by=user_id&sort_order=`$search.sort_order_rev`"|fn_url}" data-ca-target-id={$rev}>{__("user_id")}{if $search.sort_by == "user_id"}{$c_icon nofilter}{else}{$c_dummy nofilter}{/if}</a></th>
                         <th class="mobile-hide"><a class="cm-ajax" href="{"`$c_url`&sort_by=old_status&sort_order=`$search.sort_order_rev`"|fn_url}" data-ca-target-id={$rev}>{__("old_status_history")}{if $search.sort_by == "old_status"}{$c_icon nofilter}{else}{$c_dummy nofilter}{/if}</a></th>
                         <th class="mobile-hide"><a class="cm-ajax" href="{"`$c_url`&sort_by=new_status&sort_order=`$search.sort_order_rev`"|fn_url}" data-ca-target-id={$rev}>{__("new_status_history")}{if $search.sort_by == "new_status"}{$c_icon nofilter}{else}{$c_dummy nofilter}{/if}</a></th>
@@ -104,14 +104,9 @@
 {capture name="sidebar"}
     {hook name="order_status_history:manage_sidebar"}
         {include file="common/saved_search.tpl" dispatch="order_status_history.manage" view_type="banners"}
-{*        {include file="addons/banners/views/banners/components/banners_search_form.tpl" dispatch="order_status_history.manage"}*}
+
     {/hook}
 {/capture}
-
-{*hook name="banners:manage_mainbox_params"}
-{$page_title = __("banners")}
-{$select_languages = true}
-{/hook*}
 
 {include file="common/mainbox.tpl" title=$page_title content=$smarty.capture.mainbox buttons=$smarty.capture.buttons adv_buttons=$smarty.capture.adv_buttons select_languages=$select_languages sidebar=$smarty.capture.sidebar}
 

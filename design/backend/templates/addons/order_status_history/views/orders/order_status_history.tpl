@@ -34,12 +34,12 @@
                                 <span class="row-status">{$item.firstname}</span>
                             </td>
 
-                            <td class="{$no_hide_input}" data-th="{__("old_status")}">
-                                <span class="row-status">{$item.new_status_text}</span>
+                            <td>
+                                <span href="#" class="btn o-status-{$item.old_status|lower}">{$item.old_status_text}</span>
                             </td>
 
-                            <td class="{$no_hide_input}" data-th="{__("new_status")}">
-                                <span class="row-status">{$item.old_status_text}</span>
+                            <td>
+                                <span href="#" class="btn o-status-{$item.new_status|lower}">{$item.new_status_text}</span>
                             </td>
 
                             <td class="{$no_hide_input}" data-th="{__("user_id")}">

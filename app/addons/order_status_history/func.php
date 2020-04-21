@@ -63,11 +63,11 @@ function fn_get_order_status_history($params = array(), $lang_code = CART_LANGUA
 
     $join = 'left join ?:users on ?:order_status_history.user_id = ?:users.user_id';
 
-    $status_history_list = db_get_hash_array(
+    $status_history_list = db_get_array(
         "SELECT ?p FROM ?:order_status_history " .
         $join .
         " WHERE 1 ?p ?p",
-        'order_id', implode(', ', $fields), $sorting, $limit
+        implode(', ', $fields), $sorting, $limit
     );
 
     $order_statuses = fn_get_statuses(STATUSES_ORDER, [], true, true);
@@ -77,7 +77,7 @@ function fn_get_order_status_history($params = array(), $lang_code = CART_LANGUA
         $history['old_status_text'] = $order_statuses[$history['old_status']]['description'];
     }
 
-    return array($status_history_list, $params);
+    return array($status_history_list, $params, $order_statuses);
 }
 
 /**

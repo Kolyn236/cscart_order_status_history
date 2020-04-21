@@ -22,11 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 if ($mode == 'order_status_history') {
 
-   list($status_history, $params) = fn_get_order_status_history($_REQUEST, CART_LANGUAGE, Registry::get('settings.Appearance.admin_elements_per_page'));
+    list($status_history_list, $params) = fn_get_order_status_history($_REQUEST, CART_LANGUAGE, Registry::get('settings.Appearance.admin_elements_per_page'));
 
-   Tygh::$app['view']->assign(array(
-        'order_history'  => $status_history,
+    Tygh::$app['view']->assign(array(
+        'order_history' => $status_history_list,
         'search' => $params,
-   ));
+    ));
 }
-

@@ -27,6 +27,7 @@ if (!defined('BOOTSTRAP')) { die('Access denied'); }
  */
 function fn_get_order_status_history($params = array(), $lang_code = CART_LANGUAGE, $items_per_page = 0)
 {
+
     // Set default values to input params
     $default_params = array(
         'page' => 1,
@@ -43,6 +44,15 @@ function fn_get_order_status_history($params = array(), $lang_code = CART_LANGUA
         'old_status' => '?:order_status_history.old_status',
     );
 
+    $fields = array (
+        '?:order_status_history.user_id',
+        '?:order_status_history.order_id',
+        '?:order_status_history.timestamp',
+        '?:order_status_history.new_status',
+        '?:order_status_history.old_status',
+        '?:users.firstname'
+    );
+
     $sorting = db_sort($params, $sortings, 'timestamp', 'asc');
 
 
@@ -51,8 +61,14 @@ function fn_get_order_status_history($params = array(), $lang_code = CART_LANGUA
         $limit = db_paginate($params['page'], $params['items_per_page'], $params['total_items']);
     }
 
-    $status_history_list = db_get_array("SELECT ?:order_status_history.*, ?:users.firstname from ?:order_status_history 
-left join ?:users on ?:order_status_history.user_id = ?:users.user_id". $sorting." ". $limit);
+    $join = 'left join ?:users on ?:order_status_history.user_id = ?:users.user_id';
+
+    $status_history_list = db_get_hash_array(
+        "SELECT ?p FROM ?:order_status_history " .
+        $join .
+        " WHERE 1 ?p ?p",
+        'order_id', implode(', ', $fields), $sorting, $limit
+    );
 
     $order_statuses = fn_get_statuses(STATUSES_ORDER, [], true, true);
 

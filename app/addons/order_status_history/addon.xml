@@ -28,17 +28,8 @@
             ) Engine=MyISAM DEFAULT CHARSET UTF8;
         </item>
 
-        <item editions="MULTIVENDOR,ULTIMATE">REPLACE INTO ?:privileges (privilege, is_default, section_id, group_id, is_view) VALUES ('view_status_history', 'Y', 'orders', 'order_status_history', 'Y');</item>
-        <item editions="MULTIVENDOR,ULTIMATE">REPLACE INTO ?:privileges (privilege, is_default, section_id, group_id, is_view) VALUES ('manage_status_history', 'Y', 'orders', 'order_status_history', 'N');</item>
-        <item for="demo" editions="MULTIVENDOR,ULTIMATE">REPLACE INTO ?:usergroup_privileges (usergroup_id, privilege) VALUES ('4', 'view_status_history');</item>
-        <item for="demo" editions="MULTIVENDOR,ULTIMATE">REPLACE INTO ?:usergroup_privileges (usergroup_id, privilege) VALUES ('4', 'manage_status_history');</item>
         <item type="file">database/data_status_history.sql</item>
-        <item type="file" table="order_status_history">database/data_status_history.sql</item>
 
         <item for="uninstall">DROP TABLE IF EXISTS ?:order_status_history;</item>
-        <item for="uninstall" editions="MULTIVENDOR,ULTIMATE">DELETE FROM ?:privileges WHERE privilege = 'view_status_history'</item>
-        <item for="uninstall" editions="MULTIVENDOR,ULTIMATE">DELETE FROM ?:usergroup_privileges WHERE privilege = 'view_status_history'</item>
-        <item for="uninstall" editions="MULTIVENDOR,ULTIMATE">DELETE FROM ?:privileges WHERE privilege = 'manage_status_history'</item>
-        <item for="uninstall" editions="MULTIVENDOR,ULTIMATE">DELETE FROM ?:usergroup_privileges WHERE privilege = 'manage_status_history'</item>
     </queries>
 </addon>
